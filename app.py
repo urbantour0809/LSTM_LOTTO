@@ -1,11 +1,11 @@
-from flask import Flask, render_template, jsonify, redirect, url_for
+from flask import Flask, jsonify, redirect, url_for, send_file
 import numpy as np
 import pandas as pd
-from keras.models import load_model
+from tensorflow.keras.models import load_model
 from sklearn.preprocessing import MinMaxScaler
 from datetime import datetime, timedelta
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder='.')
 
 # 모델 로드
 model = load_model('lotto_model.h5')
@@ -62,7 +62,7 @@ def get_next_saturday():
 # 기본 페이지 (index.html) 라우트
 @app.route('/')
 def home():
-    return render_template('index.html')
+    return send_file('index.html')
 
 # 결과 페이지 (result.html) 라우트
 @app.route('/result')
@@ -70,7 +70,7 @@ def result():
     lotto_numbers = load_lotto_data('lotto_numbers.txt')
     predictions = predict_lotto_numbers(lotto_numbers)
     next_saturday = get_next_saturday()
-    return render_template('result.html', predictions=predictions, next_saturday=next_saturday)
+    return send_file('result.html')
 
 # 로또 번호 예측 API
 @app.route('/generate-lotto')
